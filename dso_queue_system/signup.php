@@ -13,10 +13,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
 
-    $user_type = 'public';
+   $user_type = trim($_POST['user_type'] ?? '');
 
-   if (empty($full_name) || empty($nic) || empty($email) || empty($mobile_no) || empty($password) || empty($confirm_password)) {
+if (empty($full_name) || empty($nic) || empty($email) || empty($mobile_no) || empty($password) || empty($confirm_password) || empty($user_type)) {
     $error = 'All fields are required.';
+}
+elseif (!in_array($user_type, ['public', 'staff', 'admin'])) {
+    $error = 'Please select a valid user type.';
+
 }
 elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $error = 'Invalid email address.';
@@ -120,7 +124,15 @@ else {
                                 </div>
                             </div>
                         </div>
-
+                        <div class="form-group">
+                        <i class="fas fa-users input-icon"></i>
+                        <select class="form-control" name="user_type" required>
+                            <option value="" disabled selected>Select User Type</option>
+                            <option value="public">Public User</option>
+                            <option value="staff">Staff Member</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                       </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -135,8 +147,6 @@ else {
                                 </div>
                             </div>
                         </div>
-                        <input type="hidden" name="user_type" value="public">
-
                         <button type="submit" class="btn btn-primary mt-2">
                             <i class="fas fa-check-circle me-2"></i> Register
                         </button>
